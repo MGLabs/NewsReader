@@ -49,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
             String result = "";
             URL url = null;
-            HttpURLConnection httpURLConnection;
+            HttpURLConnection httpURLConnection = null;
+            InputStream in;
+            int data;
 
             try {
                 url = new URL(strings[0]);
@@ -65,13 +67,13 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 httpURLConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = httpURLConnection.getInputStream();
+                in = httpURLConnection.getInputStream();
                 InputStreamReader reader = new InputStreamReader(in);
-                int data = reader.read();
+                data = reader.read();
 
                 while (data != -1) {
                     char current = (char) data;
-                    result += current;
+                    result += current;          //use StringBuilder instead to optimize performance
                     data = reader.read();
                 }
             } catch (IOException e) {
@@ -79,17 +81,38 @@ public class MainActivity extends AppCompatActivity {
             }
 
             int numberOfItems = 20;
-            JSONArray jsonArray = null;
+            JSONArray jsonArray;
 
 
             try {
                 jsonArray = new JSONArray(result);
+                if (jsonArray.length() < 20) {
+                    numberOfItems = jsonArray.length();
+                }
 
                 for (int i = 0; i < numberOfItems; i++) {
-                    Log.i("items!!!!", jsonArray.getString(i));
+                    String articleID = jsonArray.getString(i);
+                    url = new URL("https://hacker-news.firebaseio.com/v0/item/" + articleID + ".json?print=pretty");
+                    if (httpURLConnection != null) {
+                        httpURLConnection = (HttpURLConnection) url.openConnection();
+                    }
+                    in = httpURLConnection.getInputStream();
+                    InputStreamReader reader = new InputStreamReader(in);
+                    data = reader.read();
+                    String articleInfo = "";
+                    while (data != -1) {
+                        char current = (char) data;
+                        articleInfo += current;
+                        data = reader.read();
+                    }
+                    Log.d("ARTICOLO", articleInfo);
                 }
 
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
