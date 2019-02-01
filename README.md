@@ -1,3 +1,2 @@
 # NewsReader
-Simple Reader with ListView (Legacy component)
-Test Page
+Simple News Reader from newsapi.org using ListView (Legacy component) + Unit Tests.
