@@ -1,2 +1,2 @@
 # NewsReader
-Simple News Reader from newsapi.org using ListView (Legacy component) + Unit Tests.
+Simple News Reader from HackerNews using ListView (Legacy component) + Unit Tests.
